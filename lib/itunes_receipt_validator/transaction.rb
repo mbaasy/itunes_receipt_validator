@@ -42,7 +42,7 @@ module ItunesReceiptValidator
       @quantity = hash.fetch(:quantity)
       @purchased_at = convert_ms hash.fetch(:purchase_date_ms)
       @first_purchased_at = convert_ms hash.fetch(:original_purchase_date_ms)
-      @web_order_line_item_id = hash.fetch(:web_order_line_item_id)
+      @web_order_line_item_id = hash.fetch(:web_order_line_item_id, nil)
       @trial_period = hash.fetch(:is_trial_period, nil) == 'true'
       if hash[:bid]
         @expires_at = convert_ms hash.fetch(:expires_date, nil)

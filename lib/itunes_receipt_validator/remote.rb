@@ -7,25 +7,27 @@ module ItunesReceiptValidator
     PRODUCTION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
     SANDBOX_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
-    attr_reader :decoded, :options
+    attr_reader :receipt, :sandbox, :shared_secret, :options
 
-    def initialize(decoded, options = {})
-      @decoded = decoded
+    def initialize(receipt, options = {})
+      @receipt = receipt
+      @sandbox = options.fetch(:sandbox)
+      @shared_secret = options.fetch(:shared_secret)
       @options = options
     end
 
-    def response
-      @response ||= HTTParty.post(
-        decoded.sandbox? ? SANDBOX_ENDPOINT : PRODUCTION_ENDPOINT,
-        options.merge(payload)
-      )
-    end
-
-    def normalized
-
+    def json
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     private
+
+    def response
+      @response ||= HTTParty.post(
+        sandbox ? SANDBOX_ENDPOINT : PRODUCTION_ENDPOINT,
+        options.merge(payload)
+      )
+    end
 
     def payload
       {
@@ -34,8 +36,8 @@ module ItunesReceiptValidator
           'Content-Type' => 'application/json'
         },
         body: {
-          'password' => options.fetch(:shared_secret),
-          'receipt-data' => decoded.receipt
+          'password' => shared_secret,
+          'receipt-data' => receipt
         }.to_json
       }
     end

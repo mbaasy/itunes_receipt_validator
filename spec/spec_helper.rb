@@ -6,8 +6,10 @@ else
   SimpleCov.start
 end
 
+require 'webmock/rspec'
+require 'securerandom'
 require 'itunes_receipt_validator'
-require_relative 'shared/shared_contexts'
+require 'shared/shared_contexts'
 
 RSpec.configure do |config|
   config.order = :random

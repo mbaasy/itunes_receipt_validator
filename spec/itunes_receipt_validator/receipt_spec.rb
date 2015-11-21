@@ -1,7 +1,32 @@
 require 'spec_helper'
 
 describe ItunesReceiptValidator::Receipt do
-  let(:instance) { ItunesReceiptValidator.new(receipt) }
+  let(:options) { { shared_secret: SecureRandom.hex(20) } }
+  let(:instance) { ItunesReceiptValidator.new(receipt, options) }
+
+  before do
+    stub_request(:post, ItunesReceiptValidator::Remote::SANDBOX_ENDPOINT)
+      .to_return(body: remote_json)
+  end
+
+  shared_examples :an_itunes_request do
+    it 'fetches the data from apple' do
+      subject
+      expect(
+        a_request(:post, ItunesReceiptValidator::Remote::SANDBOX_ENDPOINT)
+        .with(
+          headers: {
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+          },
+          body: {
+            'password' => options.fetch(:shared_secret),
+            'receipt-data' => receipt
+          }.to_json
+        )
+      ).to have_been_made.once
+    end
+  end
 
   shared_examples :a_receipt do
     describe '#bundle_id' do
@@ -65,6 +90,27 @@ describe ItunesReceiptValidator::Receipt do
 
       it 'returns an instance of ItunesReceiptValidator::TransactionsProxy' do
         expect(subject).to be_a(ItunesReceiptValidator::TransactionsProxy)
+      end
+    end
+
+    describe '#latest_transactions' do
+      subject { instance.latest_transactions }
+
+      it_behaves_like :an_itunes_request
+
+      it 'returns an instance of ItunesReceiptValidator::TransactionsProxy' do
+        expect(subject).to be_a(ItunesReceiptValidator::TransactionsProxy)
+      end
+    end
+
+    describe '#latest_receipt' do
+      subject { instance.latest_receipt }
+
+      it_behaves_like :an_itunes_request
+
+      it 'returns the latest_receipt' do
+        expect(subject).to eq(JSON.parse(remote_json, symbolize_names: true)
+          .fetch(:latest_receipt))
       end
     end
   end
