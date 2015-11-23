@@ -11,7 +11,7 @@ describe ItunesReceiptValidator::Transaction do
       )
     end
 
-    it 'has parsed all timestamps' do
+    it 'parses all the timestamps' do
       %i(first_purchased_at purchased_at).each do |prop|
         expect(subject.send(prop)).to be_a(Time)
       end

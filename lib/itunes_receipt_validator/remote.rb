@@ -16,8 +16,20 @@ module ItunesReceiptValidator
       @options = options
     end
 
+    def status
+      json[:status].to_i
+    end
+
+    def valid?
+      status == 0
+    end
+
+    def expired?
+      status == 21_006
+    end
+
     def json
-      JSON.parse(response.body, symbolize_names: true)
+      @json ||= JSON.parse(response.body, symbolize_names: true)
     end
 
     private

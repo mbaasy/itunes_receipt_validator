@@ -42,7 +42,8 @@ describe ItunesReceiptValidator::Receipt do
 
       context 'when the receipt is from sandbox' do
         before do
-          allow(instance.decoded).to receive(:sandbox?).and_return(true)
+          allow_any_instance_of(ItunesReceiptDecoder::Decode::Base)
+            .to receive(:sandbox?).and_return(true)
         end
 
         it 'returns true' do
@@ -52,7 +53,8 @@ describe ItunesReceiptValidator::Receipt do
 
       context 'when the receipt is from production' do
         before do
-          allow(instance.decoded).to receive(:sandbox?).and_return(false)
+          allow_any_instance_of(ItunesReceiptDecoder::Decode::Base)
+            .to receive(:sandbox?).and_return(false)
         end
 
         it 'returns false' do
@@ -66,7 +68,8 @@ describe ItunesReceiptValidator::Receipt do
 
       context 'when the receipt is from sandbox' do
         before do
-          allow(instance.decoded).to receive(:sandbox?).and_return(true)
+          allow_any_instance_of(ItunesReceiptDecoder::Decode::Base)
+            .to receive(:sandbox?).and_return(true)
         end
 
         it 'returns false' do
@@ -76,7 +79,8 @@ describe ItunesReceiptValidator::Receipt do
 
       context 'when the receipt is from production' do
         before do
-          allow(instance.decoded).to receive(:sandbox?).and_return(false)
+          allow_any_instance_of(ItunesReceiptDecoder::Decode::Base)
+            .to receive(:sandbox?).and_return(false)
         end
 
         it 'returns true' do

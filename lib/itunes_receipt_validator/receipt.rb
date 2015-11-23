@@ -9,11 +9,11 @@ module ItunesReceiptValidator
     def initialize(receipt, options = {})
       @receipt = receipt
       @options = options
-      decoded
+      local
     end
 
     def sandbox?
-      decoded.sandbox?
+      local.sandbox?
     end
 
     def production?
@@ -21,45 +21,49 @@ module ItunesReceiptValidator
     end
 
     def bundle_id
-      @bundle_id = decoded.receipt
-                   .fetch(decoded.style == :unified ? :bundle_id : :bid)
+      @bundle_id = local.receipt
+                   .fetch(local.style == :unified ? :bundle_id : :bid)
     end
 
     def transactions
-      @transactions = TransactionsProxy.import decoded_transactions_source
+      @transactions = TransactionsProxy.import(
+        local_transactions_source, self
+      )
     end
 
     def latest_transactions
-      @latest_transactions = TransactionsProxy.import remote_transactions_source
+      @latest_transactions = TransactionsProxy.import(
+        remote_transactions_source, self
+      )
     end
 
     def latest_receipt
       @latest_receipt = remote.fetch(:latest_receipt)
     end
 
-    def decoded
-      @decoded ||= ItunesReceiptDecoder.new(receipt, expand_timestamps: true)
+    def local
+      @local ||= ItunesReceiptDecoder.new(receipt, expand_timestamps: true)
     end
 
     def remote
       @remote ||= Remote.new(
         receipt,
-        { sandbox: decoded.sandbox? }.merge(options)
+        { sandbox: local.sandbox? }.merge(options)
       ).json
     end
 
     private
 
-    def decoded_transactions_source
-      if decoded.style == :unified
-        decoded.receipt.fetch(:in_app)
+    def local_transactions_source
+      if local.style == :unified
+        local.receipt.fetch(:in_app)
       else
-        [decoded.receipt]
+        [local.receipt]
       end
     end
 
     def remote_transactions_source
-      if decoded.style == :unified
+      if local.style == :unified
         remote.fetch(:latest_receipt_info)
       else
         [remote.fetch(:latest_receipt_info)]
