@@ -11,6 +11,8 @@ require 'securerandom'
 require 'itunes_receipt_validator'
 require 'shared/shared_contexts'
 
+WebMock.disable_net_connect!(allow: 'codeclimate.com')
+
 RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed
