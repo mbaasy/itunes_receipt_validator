@@ -10,7 +10,3 @@ install:
 
 script:
   - bundle exec rake
-
-addons:
-  code_climate:
-    repo_token: b8aad51a2b8035715ac552a3858ca9ed06b0de55311e74fa34b85f4420c9671b
