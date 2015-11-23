@@ -38,7 +38,7 @@ module ItunesReceiptValidator
     end
 
     def latest_receipt
-      @latest_receipt = remote.fetch(:latest_receipt)
+      @latest_receipt = remote.json.fetch(:latest_receipt)
     end
 
     def local
@@ -49,7 +49,7 @@ module ItunesReceiptValidator
       @remote ||= Remote.new(
         receipt,
         { sandbox: local.sandbox? }.merge(options)
-      ).json
+      )
     end
 
     private
@@ -64,9 +64,9 @@ module ItunesReceiptValidator
 
     def remote_transactions_source
       if local.style == :unified
-        remote.fetch(:latest_receipt_info)
+        remote.json.fetch(:latest_receipt_info)
       else
-        [remote.fetch(:latest_receipt_info)]
+        [remote.json.fetch(:latest_receipt_info)]
       end
     end
   end
