@@ -1,1 +1,6 @@
-coverage
+/coverage/
+.DS_Store
+*.gem
+Gemfile.lock
+.ruby-version
+.ruby-gemset
