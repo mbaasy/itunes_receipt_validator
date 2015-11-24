@@ -2,8 +2,8 @@
 
 [![Code Climate](https://codeclimate.com/github/mbaasy/itunes_receipt_validator/badges/gpa.svg)](https://codeclimate.com/github/mbaasy/itunes_receipt_validator)
 [![Test Coverage](https://codeclimate.com/github/mbaasy/itunes_receipt_validator/badges/coverage.svg)](https://codeclimate.com/github/mbaasy/itunes_receipt_validator/coverage)
-[![Issue Count](https://codeclimate.com/github/mbaasy/itunes_receipt_validator/badges/issue_count.svg)](https://codeclimate.com/github/mbaasy/itunes_receipt_validator)
 [![Build Status](https://travis-ci.org/mbaasy/itunes_receipt_validator.svg?branch=master)](https://travis-ci.org/mbaasy/itunes_receipt_validator)
+[![Gem Version](https://badge.fury.io/rb/itunes_receipt_validator.svg)](https://badge.fury.io/rb/itunes_receipt_validator)
 
 iTunes receipts are available in two flavours:
 
@@ -100,7 +100,6 @@ trial_period #=> is_trial_period
 
 1. `bundle install`
 1. `rake`
-
 
 ---
 
