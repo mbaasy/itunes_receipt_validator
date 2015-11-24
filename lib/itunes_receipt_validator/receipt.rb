@@ -42,7 +42,9 @@ module ItunesReceiptValidator
     end
 
     def local
-      @local ||= ItunesReceiptDecoder.new(receipt, expand_timestamps: true)
+      @local ||= ItunesReceiptDecoder.new receipt, expand_timestamps: true
+    rescue ItunesReceiptDecoder::DecodingError => e
+      raise LocalDecodingError, e.message
     end
 
     def remote

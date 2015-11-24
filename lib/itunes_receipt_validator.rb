@@ -1,6 +1,7 @@
 require 'pp'
 require 'httparty'
 require 'itunes_receipt_decoder'
+require 'itunes_receipt_validator/error'
 require 'itunes_receipt_validator/receipt'
 require 'itunes_receipt_validator/remote'
 require 'itunes_receipt_validator/transaction'
