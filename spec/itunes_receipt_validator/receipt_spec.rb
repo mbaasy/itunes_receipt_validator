@@ -5,7 +5,7 @@ describe ItunesReceiptValidator::Receipt do
   let(:instance) { ItunesReceiptValidator.new(receipt, options) }
 
   before do
-    stub_request(:post, ItunesReceiptValidator::Remote::SANDBOX_ENDPOINT)
+    stub_request(:post, 'https://sandbox.itunes.apple.com/verifyReceipt')
       .to_return(body: remote_json)
   end
 
@@ -13,7 +13,7 @@ describe ItunesReceiptValidator::Receipt do
     it 'fetches the data from apple' do
       subject
       expect(
-        a_request(:post, ItunesReceiptValidator::Remote::SANDBOX_ENDPOINT)
+        a_request(:post, 'https://sandbox.itunes.apple.com/verifyReceipt')
         .with(
           headers: {
             'Accept' => 'application/json',
@@ -69,7 +69,7 @@ describe ItunesReceiptValidator::Receipt do
       context 'when the receipt is from sandbox' do
         before do
           allow_any_instance_of(ItunesReceiptDecoder::Decode::Base)
-            .to receive(:sandbox?).and_return(true)
+            .to receive(:production?).and_return(false)
         end
 
         it 'returns false' do
@@ -80,7 +80,7 @@ describe ItunesReceiptValidator::Receipt do
       context 'when the receipt is from production' do
         before do
           allow_any_instance_of(ItunesReceiptDecoder::Decode::Base)
-            .to receive(:sandbox?).and_return(false)
+            .to receive(:production?).and_return(true)
         end
 
         it 'returns true' do

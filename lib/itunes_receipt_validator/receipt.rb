@@ -4,25 +4,19 @@ module ItunesReceiptValidator
   ##
   # ItunesReceiptValidator::Receipt
   class Receipt
-    attr_reader :receipt, :options
+    extend Forwardable
+
+    attr_accessor :shared_secret
+    attr_reader :receipt
 
     def initialize(receipt, options = {})
       @receipt = receipt
-      @options = options
+      @shared_secret = options.fetch(:shared_secret, nil)
       local
     end
 
-    def sandbox?
-      local.sandbox?
-    end
-
-    def production?
-      !sandbox?
-    end
-
     def bundle_id
-      @bundle_id = local.receipt
-                   .fetch(local.style == :unified ? :bundle_id : :bid)
+      @bundle_id = local.receipt.fetch(style == :unified ? :bundle_id : :bid)
     end
 
     def transactions
@@ -38,7 +32,7 @@ module ItunesReceiptValidator
     end
 
     def latest_receipt
-      @latest_receipt = remote.json.fetch(:latest_receipt)
+      @latest_receipt = remote.json.fetch :latest_receipt
     end
 
     def local
@@ -47,25 +41,22 @@ module ItunesReceiptValidator
       raise LocalDecodingError, e.message
     end
 
+    def_delegators :local, :sandbox?, :production?, :style
+
     def remote
-      @remote ||= Remote.new(
-        receipt,
-        { sandbox: local.sandbox? }.merge(options)
-      )
+      @remote ||= Remote.new receipt,
+                             shared_secret: shared_secret,
+                             sandbox: sandbox?
     end
 
     private
 
     def local_transactions_source
-      if local.style == :unified
-        local.receipt.fetch(:in_app)
-      else
-        [local.receipt]
-      end
+      style == :unified ? local.receipt.fetch(:in_app) : [local.receipt]
     end
 
     def remote_transactions_source
-      if local.style == :unified
+      if style == :unified
         remote.json.fetch(:latest_receipt_info)
       else
         [remote.json.fetch(:latest_receipt_info)]
