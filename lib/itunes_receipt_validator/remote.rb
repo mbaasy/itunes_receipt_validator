@@ -7,13 +7,12 @@ module ItunesReceiptValidator
     PRODUCTION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
     SANDBOX_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
-    attr_reader :receipt, :sandbox, :shared_secret, :options
+    attr_reader :receipt, :sandbox, :shared_secret
 
     def initialize(receipt, options = {})
       @receipt = receipt
       @sandbox = options.fetch(:sandbox)
       @shared_secret = options.fetch(:shared_secret)
-      @options = options
     end
 
     def status
@@ -37,7 +36,7 @@ module ItunesReceiptValidator
     def response
       @response ||= HTTParty.post(
         sandbox ? SANDBOX_ENDPOINT : PRODUCTION_ENDPOINT,
-        options.merge(payload)
+        payload
       )
     end
 
