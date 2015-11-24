@@ -14,7 +14,9 @@ module ItunesReceiptValidator
     end
 
     def expired?
-      receipt.remote.expired? || expires_at < Time.now.utc
+      !auto_renewing? ||
+        receipt.remote.expired? ||
+        latest.expires_at < Time.now.utc
     end
 
     def cancelled?
