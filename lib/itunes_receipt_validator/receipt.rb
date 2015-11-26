@@ -6,12 +6,13 @@ module ItunesReceiptValidator
   class Receipt
     extend Forwardable
 
-    attr_accessor :shared_secret
     attr_reader :receipt
+    attr_accessor :shared_secret, :request_method
 
     def initialize(receipt, options = {})
       @receipt = receipt
       @shared_secret = options.fetch(:shared_secret, nil)
+      @request_method = options.fetch(:request_method, nil)
       local
       yield self if block_given?
     end
@@ -45,9 +46,11 @@ module ItunesReceiptValidator
     def_delegators :local, :sandbox?, :production?, :style
 
     def remote
-      @remote ||= Remote.new receipt,
-                             shared_secret: shared_secret,
-                             sandbox: sandbox?
+      @remote ||= Remote.new(receipt) do |remote|
+        remote.shared_secret = shared_secret
+        remote.sandbox = sandbox?
+        remote.request_method = request_method if request_method
+      end
     end
 
     private

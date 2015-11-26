@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ItunesReceiptValidator::Receipt do
   let(:options) { { shared_secret: SecureRandom.hex(20) } }
-  let(:instance) { ItunesReceiptValidator.new(receipt, options) }
+  let(:instance) { described_class.new(receipt, options) }
 
   before do
     stub_request(:post, 'https://sandbox.itunes.apple.com/verifyReceipt')
