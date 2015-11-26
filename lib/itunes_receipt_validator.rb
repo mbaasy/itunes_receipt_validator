@@ -10,7 +10,7 @@ require 'itunes_receipt_validator/transactions_proxy'
 ##
 # ItunesReceiptValidator
 module ItunesReceiptValidator
-  def self.new(receipt, options = {})
-    Receipt.new(receipt, options)
+  def self.new(receipt, options = {}, &block)
+    Receipt.new(receipt, options, &block)
   end
 end

@@ -13,6 +13,7 @@ module ItunesReceiptValidator
       @receipt = receipt
       @shared_secret = options.fetch(:shared_secret, nil)
       local
+      yield self if block_given?
     end
 
     def bundle_id
