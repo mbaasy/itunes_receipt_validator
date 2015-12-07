@@ -5,16 +5,34 @@
 [![Build Status](https://travis-ci.org/mbaasy/itunes_receipt_validator.svg?branch=master)](https://travis-ci.org/mbaasy/itunes_receipt_validator)
 [![Gem Version](https://badge.fury.io/rb/itunes_receipt_validator.svg)](https://badge.fury.io/rb/itunes_receipt_validator)
 
-iTunes receipts are available in two flavours:
+## Decode locally
+
+The difference between this gem and any of the alternatives is that it decodes the base64 encoded receipt with our [ItunesReceiptDecoder](https://github.com/mbaasy/itunes_receipt_decoder) library to extract the data from the receipt **without** making a HTTP request to Apple's servers.
+
+## No redundent HTTP requests
+
+Because this library decodes the receipt first, it determins the origin of the receipt before making any HTTP requests. This means you don't need to make an additional request to the sandbox or prduction URLs.
+
+Secondly, if the receipt can't be decoded, it can't be validated. This will prevent unnecessary requests when you receive fraudlent receipts.
+
+## Handle any style of receipt
+
+Apple offers two kinds of receipts:
 
 1. The deprecated [[SKPaymentTransaction transactionReceipt]](https://developer.apple.com/library/ios/documentation/StoreKit/Reference/SKPaymentTransaction_Class/#//apple_ref/occ/instp/SKPaymentTransaction/transactionReceipt) and;
 1. The Grand Unified Receipt [[NSBundle appStoreReceiptURL]](https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSBundle_Class/#//apple_ref/occ/instp/NSBundle/appStoreReceiptURL)
 
 Validating both kinds of receipts require separate logic because the schemas and data are entirely different.
 
-The different between this gem and any of the alternatives is that it firstly decodes the base64 encoded receipt with our [ItunesReceiptDecoder](https://github.com/mbaasy/itunes_receipt_decoder) gem to extract the data from the receipt **without** making a HTTP request to Apple's servers and normalizes both `[SKPaymentTransaction transactionReceipt]` receipts and `[NSBundle appStoreReceiptURL]` into a common ruby API.
+## Normalize all the things
 
-It then provides methods to retrieve the latest transactions from Apple's servers and normalizes those too. This takes away the pain of disecting the receipt data and makes it easy to support both flavours of receipts.
+No matter if the receipt is a `[SKPaymentTransaction transactionReceipt]` or `[NSBundle appStoreReceiptURL]`, the responses are normalized with extra helpful methods for all your iOS and OSX receipt validation needs.
+
+## Need a complete solution?
+
+We have a cloud service available at **[mbaasy.com](https://mbaasy.com)**, it takes care of in-app purchase management, receipt validation and reporting so you don't have to. It even offers integration with your own API through webhooks to notify you of new, expired, renewed and cancelled purchases for iOS, OSX and Google Play receipts. It will save you time and money but most of all it allows you to focus on your core project instead of wasting time on receipt validation.
+
+We offer this libary because we believe in the Open Source movement, [mbaasy.com](https://mbaasy.com) is built upon a foundation of Open Source projects, so this libary is our way of giving back to the community.
 
 ## Install
 
@@ -66,7 +84,7 @@ validator = ItunesReceiptValidator.new(base64_encoded_receipt) do |receipt|
 end
 ```
 
-Your custom method must return `status` and `body`.
+Your custom method expose a the HTTP status code and response body as `status` and `body` respectively.
 
 ### ItunesReceiptValidator::Receipt methods
 
