@@ -4,8 +4,6 @@ module ItunesReceiptValidator
   ##
   # ItunesReceiptValidator::Receipt
   class Receipt
-    extend Forwardable
-
     attr_reader :receipt
     attr_accessor :shared_secret, :request_method
 
@@ -43,13 +41,38 @@ module ItunesReceiptValidator
       raise LocalDecodingError, e.message
     end
 
-    def_delegators :local, :sandbox?, :production?, :style
+    def environment
+      @environment ||= local.environment
+    end
+
+    def production?
+      environment == :production
+    end
+
+    def sandbox?
+      !production?
+    end
+
+    def style
+      local.style
+    end
 
     def remote
-      @remote ||= Remote.new(receipt) do |remote|
+      return @remote if @remote
+      instance = Remote.new(receipt) do |remote|
         remote.shared_secret = shared_secret
         remote.sandbox = sandbox?
         remote.request_method = request_method if request_method
+      end
+
+      if instance.status == 21_007
+        @environment = :sandbox
+        remote
+      elsif instance.status == 21_008
+        @environment = :production
+        remote
+      else
+        @remote = instance
       end
     end
 

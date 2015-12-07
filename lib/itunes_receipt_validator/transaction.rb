@@ -1,3 +1,5 @@
+require 'time'
+
 ##
 # ItunesReceiptValidator
 module ItunesReceiptValidator

@@ -1,3 +1,7 @@
+require 'json'
+require 'uri'
+require 'net/https'
+
 ##
 # ItunesReceiptValidator
 module ItunesReceiptValidator
@@ -61,7 +65,14 @@ module ItunesReceiptValidator
     end
 
     def default_request_method(url, headers, body)
-      HTTParty.post(url, headers: headers, body: body)
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      request = Net::HTTP::Post.new(uri.request_uri)
+      headers.each { |key, val| request[key] = val }
+      request.body = body
+      http.request request
     end
   end
 end
