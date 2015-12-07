@@ -7,7 +7,8 @@ Gem::Specification.new do |spec|
   spec.version = ItunesReceiptValidator::VERSION
   spec.summary = 'Validate iTunes OS X and iOS receipts'
   spec.description = <<-EOF
-    Validate iTunes Transaction and Unified receipts
+    Validate iTunes Transaction and Unified style receipts with local decoding
+    and remote validation.
   EOF
   spec.license = 'MIT'
   spec.authors = ['mbaasy.com']
@@ -19,8 +20,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb'].reverse
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'httparty', '~> 0.13'
-  spec.add_dependency 'itunes_receipt_decoder', '~> 0.2'
+  spec.add_dependency 'itunes_receipt_decoder', '0.2.3'
 
   spec.add_development_dependency 'rake', '~> 10.4'
   spec.add_development_dependency 'rspec', '~> 3.3'
