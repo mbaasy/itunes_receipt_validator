@@ -4,7 +4,6 @@ module ItunesReceiptValidator
   ##
   # ItunesReceiptValidator::TransactionsProxy
   class TransactionsProxy < Array
-    include Enumerable
 
     def self.import(array, receipt)
       new array.map { |t| Transaction.new(t, receipt) }
