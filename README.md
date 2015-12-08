@@ -13,7 +13,7 @@ The difference between this gem and any of the alternatives is that it decodes t
 
 Because this library decodes the receipt first, it determins the origin of the receipt before making any HTTP requests. This means you don't need to make an additional request to the sandbox or prduction URLs.
 
-Secondly, if the receipt can't be decoded, it can't be validated. This will prevent unnecessary requests when you receive fraudlent receipts.
+Secondly, if the receipt can't be decoded, it can't be validated. This will prevent unnecessary requests when you receive fraudulent receipts.
 
 ## Handle any style of receipt
 
@@ -22,7 +22,7 @@ Apple offers two kinds of receipts:
 1. The deprecated [[SKPaymentTransaction transactionReceipt]](https://developer.apple.com/library/ios/documentation/StoreKit/Reference/SKPaymentTransaction_Class/#//apple_ref/occ/instp/SKPaymentTransaction/transactionReceipt) and;
 1. The Grand Unified Receipt [[NSBundle appStoreReceiptURL]](https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSBundle_Class/#//apple_ref/occ/instp/NSBundle/appStoreReceiptURL)
 
-Validating both kinds of receipts require separate logic because the schemas and data are entirely different.
+Validating both kinds of receipts requires separate logic because the schemas and data are entirely different.
 
 ## Normalize all the things
 
@@ -84,7 +84,7 @@ validator = ItunesReceiptValidator.new(base64_encoded_receipt) do |receipt|
 end
 ```
 
-Your custom method expose a the HTTP status code and response body as `status` and `body` respectively.
+Your custom method exposes a HTTP status code and a response body as `status` and `body` respectively.
 
 ### ItunesReceiptValidator::Receipt methods
 
