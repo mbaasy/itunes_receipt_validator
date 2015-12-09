@@ -25,8 +25,8 @@ describe ItunesReceiptValidator do
     it_behaves_like :a_receipt
   end
 
-  context 'with a transaction style receipt' do
-    include_context :transaction_receipt
+  context 'with a subscription transaction style receipt' do
+    include_context :subscription_transaction_receipt
     it_behaves_like :a_receipt
   end
 end

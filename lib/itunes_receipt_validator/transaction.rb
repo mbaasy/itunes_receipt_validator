@@ -6,6 +6,35 @@ module ItunesReceiptValidator
   ##
   # ItunesReceiptValidator::Transaction
   class Transaction
+    ATTR_MAP = {
+      id: :transaction_id,
+      original_id: :original_transaction_id,
+      product_id: :product_id,
+      quantity: :quantity,
+      web_order_line_item_id: proc do |hash|
+        hash[:web_order_line_item_id].to_s if
+          hash.fetch(:web_order_line_item_id, 0).to_i > 0
+      end,
+      trial_period: ->(hash) { hash[:is_trial_period] == 'true' },
+      purchased_at: proc do |hash|
+        parse_date(hash[:purchase_date_ms] || hash[:purchase_date])
+      end,
+      first_purchased_at: proc do |hash|
+        parse_date hash[:original_purchase_date_ms] ||
+                   hash[:original_purchase_date]
+      end,
+      cancelled_at: proc do |hash|
+        parse_date(hash[:cancelled_date_ms] || hash[:cancelled_date])
+      end,
+      expires_at: proc do |hash|
+        if hash[:bid]
+          parse_date(hash[:expires_date] || hash[:expires_date_formatted])
+        else
+          parse_date(hash[:expires_date_ms] || hash[:expires_date])
+        end
+      end
+    }
+
     attr_reader :id, :original_id, :product_id, :quantity, :first_purchased_at,
                 :purchased_at, :expires_at, :cancelled_at,
                 :web_order_line_item_id, :trial_period, :receipt
@@ -39,26 +68,29 @@ module ItunesReceiptValidator
 
     private
 
-    def convert_ms(ms)
-      return nil if ms.nil?
-      Time.at(ms.to_f / 1000).utc
-    end
+    attr_writer :id, :original_id, :product_id, :quantity,
+                :web_order_line_item_id, :trial_period, :purchased_at,
+                :first_purchased_at, :cancelled_at, :expires_at
 
     def normalize(hash)
-      @id = hash.fetch(:transaction_id)
-      @original_id = hash.fetch(:original_transaction_id)
-      @product_id = hash.fetch(:product_id)
-      @quantity = hash.fetch(:quantity)
-      @purchased_at = convert_ms hash.fetch(:purchase_date_ms)
-      @first_purchased_at = convert_ms hash.fetch(:original_purchase_date_ms)
-      @cancelled_at = convert_ms hash.fetch(:cancelled_date_ms, nil)
-      @web_order_line_item_id = hash.fetch(:web_order_line_item_id, nil)
-      @trial_period = hash.fetch(:is_trial_period, nil) == 'true'
-      if hash[:bid]
-        @expires_at = convert_ms hash.fetch(:expires_date, nil)
-      else
-        @expires_at = convert_ms hash.fetch(:expires_date_ms, nil)
+      ATTR_MAP.each do |key, val|
+        if val.is_a?(Proc)
+          send("#{key}=".to_s, instance_exec(hash, &val))
+        else
+          send("#{key}=".to_s, hash[val])
+        end
       end
+    end
+
+    def parse_date(date)
+      return nil if date.nil?
+      if date.is_a?(Integer) || (date =~ /^\d+$/) == 0
+        Time.at(date.to_f / 1000).utc
+      else
+        Time.strptime(date, '%F %T Etc/%Z').utc
+      end
+    rescue StandardError => _e
+      nil
     end
   end
 end

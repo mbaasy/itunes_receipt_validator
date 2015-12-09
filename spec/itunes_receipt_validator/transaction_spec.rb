@@ -23,8 +23,8 @@ describe ItunesReceiptValidator::Transaction do
     it_behaves_like :a_transaction
   end
 
-  context 'with a transaction style receipt' do
-    include_context :transaction_receipt
+  context 'with a subscription transaction style receipt' do
+    include_context :subscription_transaction_receipt
     it_behaves_like :a_transaction
   end
 end
