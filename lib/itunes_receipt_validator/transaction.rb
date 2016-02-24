@@ -33,7 +33,7 @@ module ItunesReceiptValidator
           parse_date(hash[:expires_date_ms] || hash[:expires_date])
         end
       end
-    }
+    }.freeze
 
     attr_reader :id, :original_id, :product_id, :quantity, :first_purchased_at,
                 :purchased_at, :expires_at, :cancelled_at,

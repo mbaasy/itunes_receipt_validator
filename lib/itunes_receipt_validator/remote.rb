@@ -8,8 +8,8 @@ module ItunesReceiptValidator
   ##
   # ItunesReceiptValidator::Receipt
   class Remote
-    PRODUCTION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
-    SANDBOX_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
+    PRODUCTION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'.freeze
+    SANDBOX_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'.freeze
 
     attr_reader :receipt
     attr_accessor :sandbox, :shared_secret, :request_method
