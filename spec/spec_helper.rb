@@ -7,6 +7,7 @@ else
 end
 
 require 'webmock/rspec'
+require 'timecop'
 require 'securerandom'
 require 'itunes_receipt_validator'
 require 'shared/shared_contexts'

@@ -185,4 +185,38 @@ describe ItunesReceiptValidator::Receipt do
     include_context :subscription_transaction_receipt
     it_behaves_like :a_receipt
   end
+
+  context 'with a expired subscription transaction style receipt' do
+    include_context :expired_subscription_transaction_receipt
+
+    describe '#latest_transactions' do
+      subject { instance.latest_transactions }
+
+      it_behaves_like :an_itunes_sandbox_result
+
+      it 'returns an instance of ItunesReceiptValidator::TransactionsProxy' do
+        expect(subject).to be_a(ItunesReceiptValidator::TransactionsProxy)
+      end
+    end
+
+    describe '#remote' do
+      subject { instance.remote }
+
+      describe '#expired?' do
+        subject { super().expired? }
+
+        it 'returns true' do
+          expect(subject).to eq(true)
+        end
+      end
+
+      describe '#valid?' do
+        subject { super().valid? }
+
+        it 'returns false' do
+          expect(subject).to eq(false)
+        end
+      end
+    end
+  end
 end
