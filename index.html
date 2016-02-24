@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Itunes receipt validator by mbaasy</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Itunes receipt validator</h1>
+        <h2>Validate iTunes Transaction and Unified style receipts with local decoding and remote validation.</h2>
+        <a href="https://github.com/mbaasy/itunes_receipt_validator" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="itunes-receipt-validator" class="anchor" href="#itunes-receipt-validator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>iTunes Receipt Validator</h1>
+
+<p><a href="https://codeclimate.com/github/mbaasy/itunes_receipt_validator"><img src="https://codeclimate.com/github/mbaasy/itunes_receipt_validator/badges/gpa.svg" alt="Code Climate"></a>
+<a href="https://codeclimate.com/github/mbaasy/itunes_receipt_validator/coverage"><img src="https://codeclimate.com/github/mbaasy/itunes_receipt_validator/badges/coverage.svg" alt="Test Coverage"></a>
+<a href="https://travis-ci.org/mbaasy/itunes_receipt_validator"><img src="https://travis-ci.org/mbaasy/itunes_receipt_validator.svg?branch=master" alt="Build Status"></a>
+<a href="https://badge.fury.io/rb/itunes_receipt_validator"><img src="https://badge.fury.io/rb/itunes_receipt_validator.svg" alt="Gem Version"></a></p>
+
+<h2>
+<a id="decode-locally" class="anchor" href="#decode-locally" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Decode locally</h2>
+
+<p>The difference between this gem and any of the alternatives is that it decodes the base64 encoded receipt with our <a href="https://github.com/mbaasy/itunes_receipt_decoder">ItunesReceiptDecoder</a> library to extract the data from the receipt <strong>without</strong> making a HTTP request to Apple's servers.</p>
+
+<h2>
+<a id="no-redundent-http-requests" class="anchor" href="#no-redundent-http-requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>No redundent HTTP requests</h2>
+
+<p>Because this library decodes the receipt first, it determins the origin of the receipt before making any HTTP requests. This means you don't need to make an additional request to the sandbox or prduction URLs.</p>
+
+<p>Secondly, if the receipt can't be decoded, it can't be validated. This will prevent unnecessary requests when you receive fraudulent receipts.</p>
+
+<h2>
+<a id="handle-any-style-of-receipt" class="anchor" href="#handle-any-style-of-receipt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Handle any style of receipt</h2>
+
+<p>Apple offers two kinds of receipts:</p>
+
+<ol>
+<li>The deprecated <a href="https://developer.apple.com/library/ios/documentation/StoreKit/Reference/SKPaymentTransaction_Class/#//apple_ref/occ/instp/SKPaymentTransaction/transactionReceipt">[SKPaymentTransaction transactionReceipt]</a> and;</li>
+<li>The Grand Unified Receipt <a href="https://developer.apple.com/library/prerelease/ios/documentation/Cocoa/Reference/Foundation/Classes/NSBundle_Class/#//apple_ref/occ/instp/NSBundle/appStoreReceiptURL">[NSBundle appStoreReceiptURL]</a>
+</li>
+</ol>
+
+<p>Validating both kinds of receipts requires separate logic because the schemas and data are entirely different.</p>
+
+<h2>
+<a id="normalize-all-the-things" class="anchor" href="#normalize-all-the-things" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Normalize all the things</h2>
+
+<p>No matter if the receipt is a <code>[SKPaymentTransaction transactionReceipt]</code> or <code>[NSBundle appStoreReceiptURL]</code>, the responses are normalized with extra helpful methods for all your iOS and OSX receipt validation needs.</p>
+
+<h2>
+<a id="need-a-complete-solution" class="anchor" href="#need-a-complete-solution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Need a complete solution?</h2>
+
+<p>We have a cloud service available at <strong><a href="https://mbaasy.com">mbaasy.com</a></strong>, it takes care of in-app purchase management, receipt validation and reporting so you don't have to. It even offers integration with your own API through webhooks to notify you of new, expired, renewed and cancelled purchases for iOS, OSX and Google Play receipts. It will save you time and money but most of all it allows you to focus on your core project instead of wasting time on receipt validation.</p>
+
+<p>We offer this libary because we believe in the Open Source movement, <a href="https://mbaasy.com">mbaasy.com</a> is built upon a foundation of Open Source projects, so this libary is our way of giving back to the community.</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Install from the command line:</p>
+
+<div class="highlight highlight-source-shell"><pre>$ gem install itunes_receipt_validator</pre></div>
+
+<p>Or include it in your Gemfile:</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>itunes_receipt_validator<span class="pl-pds">'</span></span></pre></div>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="initialization" class="anchor" href="#initialization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Initialization</h3>
+
+<div class="highlight highlight-source-ruby"><pre>validator <span class="pl-k">=</span> <span class="pl-c1">ItunesReceiptValidator</span>.<span class="pl-k">new</span>(
+  base64_encoded_receipt,
+  <span class="pl-c1">shared_secret:</span> <span class="pl-s"><span class="pl-pds">'</span>your_shared_secret<span class="pl-pds">'</span></span>
+) <span class="pl-c"># =&gt; ItunesReceiptValidator::Receipt</span></pre></div>
+
+<p>Or intialize with a block:</p>
+
+<div class="highlight highlight-source-ruby"><pre>shared_secrets <span class="pl-k">=</span> {
+  <span class="pl-s"><span class="pl-pds">'</span>com.example.app1<span class="pl-pds">'</span></span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>shared_secret_for_app1<span class="pl-pds">'</span></span>
+  <span class="pl-s"><span class="pl-pds">'</span>com.example.app2<span class="pl-pds">'</span></span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>shared_secret_for_app2<span class="pl-pds">'</span></span>
+}
+validator <span class="pl-k">=</span> <span class="pl-c1">ItunesReceiptValidator</span>.<span class="pl-k">new</span>(base64_encoded_receipt) <span class="pl-k">do </span>|<span class="pl-smi">receipt</span>|
+  receipt.shared_secret <span class="pl-k">=</span> shared_secrets.fetch(receipt.bundle_id)
+<span class="pl-k">end</span></pre></div>
+
+<h3>
+<a id="byo-http-requests" class="anchor" href="#byo-http-requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BYO HTTP requests</h3>
+
+<p>If you require more flexibility with upstream HTTP requests to Apple's Validation API you can initialize with your own request method.</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator <span class="pl-k">=</span> <span class="pl-c1">ItunesReceiptValidator</span>.<span class="pl-k">new</span>(base64_encoded_receipt) <span class="pl-k">do </span>|<span class="pl-smi">receipt</span>|
+  receipt.shared_secret <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>your_shared_secret<span class="pl-pds">'</span></span>
+  receipt.request_method <span class="pl-k">=</span> lambda <span class="pl-k">do </span>|<span class="pl-smi">url</span>, <span class="pl-smi">headers</span>, <span class="pl-smi">body</span>|
+    <span class="pl-c1">MyFancyRequest</span>.<span class="pl-k">new</span>(url, <span class="pl-c1">headers:</span> headers, <span class="pl-c1">body:</span> body)
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
+
+<p>Your custom method exposes a HTTP status code and a response body as <code>status</code> and <code>body</code> respectively.</p>
+
+<h3>
+<a id="itunesreceiptvalidatorreceipt-methods" class="anchor" href="#itunesreceiptvalidatorreceipt-methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ItunesReceiptValidator::Receipt methods</h3>
+
+<div class="highlight highlight-source-ruby"><pre>validator.sandbox?</pre></div>
+
+<p>Returns true or false (opposite of production?).</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.production?</pre></div>
+
+<p>Returns true or false (opposite of sandbox?).</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.bundle_id</pre></div>
+
+<p>Returns the bundle_id of the app (e.g. com.mbaasy.ios).</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.transactions</pre></div>
+
+<p>Returns a sub-class of <code>Array</code>, with transactions sourced locally from the receipt. See <a href="#itunesreceiptvalidatortransactionsproxy-methods">ItunesReceiptValidator::TransactionsProxy methods</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.latest_transactions</pre></div>
+
+<p>Returns a sub-class of <code>Array</code>, with transactions sourced from Apple's validation API. See <a href="#itunesreceiptvalidatortransactionsproxy-methods">ItunesReceiptValidator::TransactionsProxy methods</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.latest_receipt</pre></div>
+
+<p>Returns a base64 encoded string for the latest receipt sourced from Apple's validation API.</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.local</pre></div>
+
+<p>Returns the <code>ItunesReceiptDecoder::Decode::Transaction</code> or <code>ItunesReceiptDecoder::Decode::Unified</code> instances. See the <a href="https://github.com/mbaasy/itunes_receipt_decoder">ItunesReceiptDecoder</a> gem.</p>
+
+<div class="highlight highlight-source-ruby"><pre>validator.remote</pre></div>
+
+<p>Returns the <code>ItunesReceiptValidator::Remote</code> instance.</p>
+
+<h3>
+<a id="itunesreceiptvalidatortransactionsproxy-methods" class="anchor" href="#itunesreceiptvalidatortransactionsproxy-methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ItunesReceiptValidator::TransactionsProxy methods</h3>
+
+<p>Inerhits from <a href="http://apidock.com/ruby/Array">Array</a> and includes <a href="http://apidock.com/ruby/Enumerable">Enumerable</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transactions.where(<span class="pl-c1">id:</span> <span class="pl-c1">1234</span>)</pre></div>
+
+<p>Like ActiveRecord's <code>where</code> it accepts a hash of arguments and returns a new instance of <code>ItunesReceiptValidator::TransactionsProxy</code>.</p>
+
+<h3>
+<a id="itunesreceiptvalidatortransaction-methods" class="anchor" href="#itunesreceiptvalidatortransaction-methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ItunesReceiptValidator::Transaction methods</h3>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.expired?</pre></div>
+
+<p>Returns true or false. This method will make a request to Apple's validation API to check if the receipt itself has expired, or if the latest transaction retrieved is expired.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.cancelled?</pre></div>
+
+<p>Returns true or false.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.auto_renewing?</pre></div>
+
+<p>Returns true if <code>web_order_line_item_id</code> is present.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.trial_period?</pre></div>
+
+<p>Returns true or false.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.latest</pre></div>
+
+<p>Returns a <code>ItunesReceiptValidator::Transaction</code> by making a request to Apple's validation API and matches it with the <code>original_id</code>.</p>
+
+<h3>
+<a id="itunesreceiptvalidatortransaction-properties" class="anchor" href="#itunesreceiptvalidatortransaction-properties" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ItunesReceiptValidator::Transaction properties</h3>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.id</pre></div>
+
+<p>The transaction identifier of the item that was purchased.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW13">Transaction Identifier</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.original_id</pre></div>
+
+<p>For a transaction that restores a previous transaction, the transaction identifier of the original transaction. Otherwise, identical to the transaction identifier.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW14">Original Transaction Identifier</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.product_id</pre></div>
+
+<p>The product identifier of the item that was purchased.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW11">Product Identifier</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.quantity</pre></div>
+
+<p>The number of items purchased.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW10">Quantity</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.first_purchased_at</pre></div>
+
+<p>For a transaction that restores a previous transaction, the date of the original transaction. Cast as a <code>Time</code> instance.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW4">Original Purchase Date</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.purchased_at</pre></div>
+
+<p>The date and time that the item was purchased. Cast as a <code>Time</code> instance.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW15">Purchase Date</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.expires_at</pre></div>
+
+<p>The expiration date for the subscription. Cast as a <code>Time</code> instance.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW28">Subscription Expiration Date</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.cancelled_at</pre></div>
+
+<p>For a transaction that was canceled by Apple customer support, the time and date of the cancellation. Cast as a <code>Time</code> instance.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW19">Cancellation Date</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.web_order_line_item_id</pre></div>
+
+<p>The primary key for identifying subscription purchases.</p>
+
+<p>See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW17">Web Order Line Item ID</a>.</p>
+
+<div class="highlight highlight-source-ruby"><pre>transaction.trial_period</pre></div>
+
+<p>Undocumented with Apple.</p>
+
+<h2>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing</h2>
+
+<ol>
+<li><code>bundle install</code></li>
+<li><code>rake</code></li>
+</ol>
+
+<hr>
+
+<p>Copyright 2015 <a href="https://mbaasy.com/">mbaasy.com</a>. This project is subject to the <a href="/LICENSE">MIT License</a>.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/mbaasy/itunes_receipt_validator/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/mbaasy/itunes_receipt_validator/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/mbaasy/itunes_receipt_validator"></a> is maintained by <a href="https://github.com/mbaasy">mbaasy</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
