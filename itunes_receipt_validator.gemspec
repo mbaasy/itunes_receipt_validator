@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb'].reverse
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'itunes_receipt_decoder', '0.3.0'
+  spec.add_dependency 'itunes_receipt_decoder', '0.3.1'
 
   spec.add_development_dependency 'rake', '~> 10.5'
   spec.add_development_dependency 'rspec', '~> 3.4'
