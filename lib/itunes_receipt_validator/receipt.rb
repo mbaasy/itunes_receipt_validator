@@ -79,12 +79,12 @@ module ItunesReceiptValidator
     private
 
     def local_transactions_source
-      style == :unified ? local.receipt.fetch(:in_app) : [local.receipt]
+      style == :unified ? local.receipt.fetch(:in_app, []) : [local.receipt]
     end
 
     def remote_transactions_source
       if style == :unified
-        remote.json.fetch(:latest_receipt_info)
+        remote.json.fetch(:latest_receipt_info, [])
       elsif remote.expired?
         [remote.json.fetch(:latest_expired_receipt_info)]
       else
