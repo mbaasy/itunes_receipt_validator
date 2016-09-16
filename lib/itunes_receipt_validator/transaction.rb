@@ -84,7 +84,7 @@ module ItunesReceiptValidator
 
     def parse_date(date)
       return nil if date.nil?
-      if date.is_a?(Integer) || (date =~ /^\d+$/) == 0
+      if date.is_a?(Integer) || (date =~ /^\d+$/).zero?
         Time.at(date.to_f / 1000).utc
       else
         Time.strptime(date, '%F %T Etc/%Z').utc

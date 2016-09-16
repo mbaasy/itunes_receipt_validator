@@ -27,7 +27,7 @@ module ItunesReceiptValidator
     end
 
     def valid?
-      status == 0
+      status.zero?
     end
 
     def expired?
