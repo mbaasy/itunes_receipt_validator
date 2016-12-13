@@ -32,7 +32,7 @@ module ItunesReceiptValidator
     end
 
     def latest_receipt
-      @latest_receipt = remote.json.fetch :latest_receipt
+      @latest_receipt = remote.json.fetch :latest_receipt, nil
     end
 
     def local
