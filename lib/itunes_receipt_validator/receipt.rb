@@ -86,9 +86,9 @@ module ItunesReceiptValidator
       if style == :unified
         remote.json.fetch(:latest_receipt_info, [])
       elsif remote.expired?
-        [remote.json.fetch(:latest_expired_receipt_info)]
+        [remote.json.fetch(:latest_expired_receipt_info, nil)].compact
       else
-        [remote.json.fetch(:latest_receipt_info)]
+        [remote.json.fetch(:latest_receipt_info, nil)].compact
       end
     end
   end
