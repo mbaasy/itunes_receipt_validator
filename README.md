@@ -11,7 +11,7 @@ The difference between this gem and any of the alternatives is that it decodes t
 
 ## No redundent HTTP requests
 
-Because this library decodes the receipt first, it determins the origin of the receipt before making any HTTP requests. This means you don't need to make an additional request to the sandbox or prduction URLs.
+Because this library decodes the receipt first, it determins the origin of the receipt before making any HTTP requests. This means you don't need to make an additional request to the sandbox or production URLs.
 
 Secondly, if the receipt can't be decoded, it can't be validated. This will prevent unnecessary requests when you receive fraudulent receipts.
 
