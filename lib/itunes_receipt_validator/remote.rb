@@ -11,6 +11,15 @@ module ItunesReceiptValidator
     PRODUCTION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'.freeze
     SANDBOX_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'.freeze
 
+    EXPIRATION_INTENTS = {
+      0 => :no_expiration_intent,
+      1 => :canceled,                   # Customer canceled their subscription
+      2 => :billing_error,              # Customers payment information invalid
+      3 => :customer_did_not_agree,     # To a recent price increase
+      4 => :product_was_not_available,  # For purchase at the time of renewal
+      5 => :unknown_error
+    }.freeze
+
     attr_reader :receipt
     attr_accessor :sandbox, :shared_secret, :request_method
 
@@ -28,6 +37,20 @@ module ItunesReceiptValidator
 
     def valid?
       status.zero?
+    end
+
+    def in_billing_retry_period?
+      json.key?(:is_in_billing_retry_period) &&
+        json[:is_in_billing_retry_period] == 1
+    end
+
+    def in_cancelled_billing_retry_period?
+      json.key?(:is_in_billing_retry_period) &&
+        json[:is_in_billing_retry_period].zero?
+    end
+
+    def expiration_intent
+      EXPIRATION_INTENTS[json[:expiration_intent].to_i]
     end
 
     def expired?
