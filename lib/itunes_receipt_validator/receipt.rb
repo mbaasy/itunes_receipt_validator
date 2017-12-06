@@ -6,6 +6,11 @@ module ItunesReceiptValidator
   class Receipt
     attr_reader :receipt
     attr_accessor :shared_secret, :request_method
+    attr_accessor :remote
+
+    delegate :in_billing_retry_period?, to: :remote
+    delegate :in_cancelled_billing_retry_period?, to: :remote
+    delegate :expiration_intent, to: :remote
 
     def initialize(receipt, options = {})
       @receipt = receipt
