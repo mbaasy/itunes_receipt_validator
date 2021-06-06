@@ -24,7 +24,7 @@ module ItunesReceiptValidator
                    hash[:original_purchase_date]
       end,
       cancelled_at: proc do |hash|
-        parse_date(hash[:cancelled_date_ms] || hash[:cancelled_date])
+        parse_date(hash[:cancellation_date_ms] || hash[:cancellation_date])
       end,
       expires_at: proc do |hash|
         if hash[:bid]
